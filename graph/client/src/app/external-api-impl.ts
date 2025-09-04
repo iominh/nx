@@ -1,17 +1,7 @@
 import { ExternalApi, getExternalApiService } from '@nx/graph-shared';
 import { getRouter } from './get-router';
-import { getProjectGraphService } from './machines/get-services';
 
 export class ExternalApiImpl extends ExternalApi {
-  _projectGraphService = getProjectGraphService();
-  _graphIsReady = new Promise<void>((resolve) => {
-    this._projectGraphService.subscribe((state) => {
-      if (!state.matches('idle')) {
-        resolve();
-      }
-    });
-  });
-
   router = getRouter();
   externalApiService = getExternalApiService();
 
@@ -73,19 +63,20 @@ export class ExternalApiImpl extends ExternalApi {
   }
 
   toggleSelectProject(projectName: string) {
-    this._graphIsReady.then(() => {
-      const projectSelected = this._projectGraphService
-        .getSnapshot()
-        .context.selectedProjects.find((p) => p === projectName);
-      if (!projectSelected) {
-        this._projectGraphService.send({ type: 'selectProject', projectName });
-      } else {
-        this._projectGraphService.send({
-          type: 'deselectProject',
-          projectName,
-        });
-      }
-    });
+    // TODO: (chau) what does this do?
+    // this._graphIsReady.then(() => {
+    //   const projectSelected = this._projectGraphService
+    //     .getSnapshot()
+    //     .context.selectedProjects.find((p) => p === projectName);
+    //   if (!projectSelected) {
+    //     this._projectGraphService.send({ type: 'selectProject', projectName });
+    //   } else {
+    //     this._projectGraphService.send({
+    //       type: 'deselectProject',
+    //       projectName,
+    //     });
+    //   }
+    // });
   }
 
   selectAllProjects() {
